@@ -1,6 +1,7 @@
 # Playnite Bangumi Metadata Provider
 
 > [Bangumi](https://bgm.tv/)
+> [Playnite](https://playnite.link/)
 
 Playnite的Bangumi元数据插件
 
