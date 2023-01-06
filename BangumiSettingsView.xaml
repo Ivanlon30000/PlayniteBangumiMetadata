@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="Bangumi.BangumiSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="600">
+    
+    <StackPanel Margin="10">
+        <StackPanel Margin="5">
+            <TextBlock Text="Access Token"/>
+            <TextBox Text="{Binding Settings.AccessToken}"/>
+            <TextBlock Text="{Binding Settings.AccessTokenStatusMessage}"></TextBlock>
+        </StackPanel>
+        
+        <StackPanel Margin="5">
+            <TextBlock Text="Tag过滤阈值"/>
+            <TextBox Text="{Binding Settings.TagThres}"/>
+        </StackPanel>
+        
+        <StackPanel Margin="5">
+            <CheckBox IsChecked="{Binding Settings.CoverImageAsBackgroundImage}">使用封面作为背景</CheckBox>
+        </StackPanel>
+        
+        <StackPanel  Margin="5">
+            <TextBlock Text="命名格式"/>
+            <StackPanel>
+                <TextBlock Text="存在译名时："/>
+                <TextBox Text="{Binding Settings.NameFormatNameCnExists}" />
+                <TextBlock Text="不存在译名时："/>
+                <TextBox Text="{Binding Settings.NameFormatNameCnNotExists}" />
+            </StackPanel>
+        </StackPanel>
+        
+        <StackPanel Margin="5">
+            <TextBlock Text="从名称中提取Bangumi Id的正则表达式"></TextBlock>
+            <TextBox Text="{Binding Settings.NameFormatPattern}"></TextBox>
+        </StackPanel>
+        
+        <StackPanel Margin="5">
+            <CheckBox IsChecked="{Binding Settings.SkipSelectWindowWhenSearchResultUnique}">搜索结果唯一时跳过搜索窗口</CheckBox>
+        </StackPanel>
+        
+        <StackPanel Margin="5">
+            <TextBlock>为NSFW游戏添加分级标签（留空不添加，英文逗号分隔）</TextBlock>
+            <TextBox Text="{Binding Settings.NsfwTag}"></TextBox>
+            <TextBlock>为SFW游戏添加分级标签（留空不添加，英文逗号分隔）</TextBlock>
+            <TextBox Text="{Binding Settings.SfwTag}"></TextBox>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

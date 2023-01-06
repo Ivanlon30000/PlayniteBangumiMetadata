@@ -1,0 +1,10 @@
+﻿Id: Bangumi_fea02b9a-ab77-47e3-8fb1-6512c9261fbe
+Name: Bangumi Metadata Provider
+Author: Ivanlon
+Version: 1.0
+Module: Bangumi.dll
+Type: MetadataProvider
+Icon: icon.png
+Links:
+  - Name: GitHub
+  - Url: https://github.com/Ivanlon30000/PlayniteBangumiMetadata
