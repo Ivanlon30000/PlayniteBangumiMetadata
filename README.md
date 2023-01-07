@@ -15,25 +15,25 @@ Playnite的Bangumi元数据插件
 
 ## 提供的字段  
 + 社区评分(`CommunityScore`)  
-    Bangumi评分*10
+    > Bangumi评分*10
 + 封面图像(`CoverImage`)
 + 描述(`Description`)  
 + 开发者(`Developers`)
 + 流派(`Genres`)
-    游戏类型
+    > 游戏类型
 + 链接(`Links`)  
-    Bangumi页面
-    游戏官网（如果有）
+    > + Bangumi页面
+    > + 游戏官网（如果有）
 + 游戏名(`Name`)  
-    根据用户设置的格式
+    > 根据用户设置的格式
 + 发行者(`Publishers`)
 + 发行日期(`ReleaseDate`)
 + 标签(`Tags`)  
-    Bangumi页面中“大家将 xx 标注为”
+    > Bangumi页面中“大家将 xx 标注为”
 + 背景图片(`BackgroundImage`)  
-    在设置中启用后，封面图片作为背景图片提供
+    > 在设置中启用后，封面图片作为背景图片提供
 + 年龄分级(`AgeRating`)  
-    在设置中启用后，为sfw/nsfw作品设置年龄分级
+    > 在设置中启用后，为sfw/nsfw作品设置年龄分级
 + 平台(`Platform`)  
 
 ## 扩展设置
