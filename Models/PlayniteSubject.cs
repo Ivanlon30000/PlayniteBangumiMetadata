@@ -116,19 +116,19 @@ namespace Bangumi.Models
             }
         }
 
-        private List<string> genres;
-        public List<string> Genres
+        private List<MetadataProperty> genres;
+        public List<MetadataProperty> Genres
         {
             get
             {
                 if (genres == null)
                 {
-                    genres = new List<string>();
+                    genres = new List<MetadataProperty>();
                     foreach (var pair in bangumiSubject.textInfobox.Where(pair => pair.Key.Equals("游戏类型")))
                     {
                         genres.AddRange(pair.Value
                             .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                            .Select(s => s.Trim())
+                            .Select(s => new MetadataNameProperty(s.Trim()))
                         );
                         break;
                     }

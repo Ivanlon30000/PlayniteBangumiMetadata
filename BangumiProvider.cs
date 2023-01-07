@@ -43,11 +43,11 @@ namespace Bangumi
 
         private List<MetadataField> GetAvailableFields()
         {
-            logger.Debug("invoke GetAvailableFields");
+            // logger.Debug("invoke GetAvailableFields");
             List<MetadataField> metadataFields = new List<MetadataField>();
             if (GetBangumiMetadata() && subject !=null)
             {
-                logger.Debug(subject.ToString());
+                // logger.Debug(subject.ToString());
                 if (!string.IsNullOrEmpty(subject.Name))
                 {
                     metadataFields.Add(MetadataField.Name);
@@ -102,13 +102,13 @@ namespace Bangumi
                 }
                 
             }
-            logger.Debug(string.Join(",", metadataFields));
+            // logger.Debug(string.Join(",", metadataFields));
             return metadataFields;
         }
 
         private bool GetBangumiMetadata()
         {
-            logger.Debug("invoke GetBangumiMetadata");
+            // logger.Debug("invoke GetBangumiMetadata");
             if (subject != null)
             {
                 return true;
@@ -154,7 +154,7 @@ namespace Bangumi
             
             if (item != null)
             {
-                logger.Debug(item.ToString());
+                // logger.Debug(item.ToString());
                 subject = new PlayniteSubject(service.GetSubjectById(item.Id), settings);
                 
             }
@@ -166,7 +166,7 @@ namespace Bangumi
         public override MetadataFile GetBackgroundImage(GetMetadataFieldArgs args)
         {
             // TODO 根据图片大小过滤背景
-            logger.Debug("invoke GetBackgroundImage");
+            // logger.Debug("invoke GetBackgroundImage");
             if (AvailableFields.Contains(MetadataField.BackgroundImage))
             {
                 return subject.BackgroundImage;
@@ -176,7 +176,7 @@ namespace Bangumi
 
         public override int? GetCommunityScore(GetMetadataFieldArgs args)
         {
-            logger.Debug("invoke GetCommunityScore");
+            // logger.Debug("invoke GetCommunityScore");
             if (AvailableFields.Contains(MetadataField.CommunityScore))
             {
                 return subject.CommunityScore;
@@ -186,7 +186,7 @@ namespace Bangumi
 
         public override MetadataFile GetCoverImage(GetMetadataFieldArgs args)
         {
-            logger.Debug("invoke GetCoverImage");
+            // logger.Debug("invoke GetCoverImage");
             if (AvailableFields.Contains(MetadataField.CoverImage))
             {
                 return subject.CoverImage;
@@ -196,7 +196,7 @@ namespace Bangumi
 
         public override string GetDescription(GetMetadataFieldArgs args)
         {
-            logger.Debug("invoke GetDescription");
+            // logger.Debug("invoke GetDescription");
             if (AvailableFields.Contains(MetadataField.Description))
             {
                 return subject.Description;
@@ -206,7 +206,7 @@ namespace Bangumi
 
         public override IEnumerable<MetadataProperty> GetDevelopers(GetMetadataFieldArgs args)
         {
-            logger.Debug("invoke GetDevelopers");
+            // logger.Debug("invoke GetDevelopers");
             if (AvailableFields.Contains(MetadataField.Developers))
             {
                 return subject.Developers;
@@ -216,7 +216,7 @@ namespace Bangumi
 
         public override IEnumerable<Link> GetLinks(GetMetadataFieldArgs args)
         {
-            logger.Debug("invoke GetLinks");
+            // logger.Debug("invoke GetLinks");
             if (AvailableFields.Contains(MetadataField.Links))
             {
                 return subject.Links;
@@ -227,8 +227,7 @@ namespace Bangumi
 
         public override string GetName(GetMetadataFieldArgs args)
         {
-            // TOOD 根据用户设定使用name_cn
-            logger.Debug("invoke GetName");
+            // logger.Debug("invoke GetName");
             if (AvailableFields.Contains(MetadataField.Name))
             {
                 return subject.Name;
@@ -238,7 +237,7 @@ namespace Bangumi
 
         public override IEnumerable<MetadataProperty> GetPublishers(GetMetadataFieldArgs args)
         {
-            logger.Debug("invoke GetPublishers");
+            // logger.Debug("invoke GetPublishers");
             if (AvailableFields.Contains(MetadataField.Publishers))
             {
                 return subject.Publishers;
@@ -248,7 +247,7 @@ namespace Bangumi
 
         public override ReleaseDate? GetReleaseDate(GetMetadataFieldArgs args)
         {
-            logger.Debug("invoke GetReleaseDate");
+            // logger.Debug("invoke GetReleaseDate");
             if (AvailableFields.Contains(MetadataField.ReleaseDate))
             {
                 return subject.ReleaseDate;
@@ -258,7 +257,7 @@ namespace Bangumi
 
         public override IEnumerable<MetadataProperty> GetTags(GetMetadataFieldArgs args)
         {
-            logger.Debug("invoke GetTags");
+            // logger.Debug("invoke GetTags");
             if (AvailableFields.Contains(MetadataField.Tags))
             {
                 return subject.Tags;
@@ -282,6 +281,17 @@ namespace Bangumi
                 return subject.Platform;
             }
             return base.GetPlatforms(args);
+        }
+
+        public override IEnumerable<MetadataProperty> GetGenres(GetMetadataFieldArgs args)
+        {
+            // logger.Debug("invoke GetGenres");
+            if (AvailableFields.Contains(MetadataField.Genres))
+            {
+                // logger.Debug(subject.Genres.Count.ToString());
+                return subject.Genres;
+            }
+            return base.GetGenres(args);
         }
     }
 }

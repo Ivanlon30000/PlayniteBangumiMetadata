@@ -21,6 +21,8 @@ namespace Bangumi.Services
             this.client = new HttpClient(BANGUMI_API);
             this.client.Request.AddExtraHeader("Authorization", $"Bearer {accessToken}");
             this.client.Request.Accept = HttpContentTypes.ApplicationJson;
+            this.client.Request.UserAgent =
+                "ivanlon/PlayniteBangumiMetadataProvider/1.0 (https://github.com/Ivanlon30000/PlayniteBangumiMetadata)";
         }
 
         public Dictionary<string, string> GetMe()
@@ -28,7 +30,7 @@ namespace Bangumi.Services
             string uri = "/v0/me";
             try
             {
-                logger.Debug("get me");
+                // logger.Debug("get me");
                 HttpResponse httpResponse = client.Get(uri);
                 JObject jObject = JsonConvert.DeserializeObject<JObject>(httpResponse.RawText);
                 Dictionary<string,string> info = new Dictionary<string, string>
@@ -39,7 +41,7 @@ namespace Bangumi.Services
                     { "avatar", jObject["avatar"]["large"].ToObject<string>() },
                     { "id", jObject["id"].ToObject<int>().ToString() }
                 };
-                logger.Debug(JsonConvert.SerializeObject(info));
+                // logger.Debug(JsonConvert.SerializeObject(info));
                 return info;
             }
             catch (Exception e)
@@ -52,7 +54,7 @@ namespace Bangumi.Services
 
         public List<BangumiSubject> Search(string keyword, string pattern = null)
         {
-            logger.Debug($"Search '{keyword}'");
+            // logger.Debug($"Search '{keyword}'");
             
             // 直接解析为bangumi id
             List<BangumiSubject> searchResult = new List<BangumiSubject>();
@@ -87,7 +89,7 @@ namespace Bangumi.Services
             if (id > 0)
             {
                 searchResult.Add(GetSubjectById(id));
-                logger.Debug($"match subject with id {id}");
+                // logger.Debug($"match subject with id {id}");
             }
             
 
@@ -96,7 +98,7 @@ namespace Bangumi.Services
 
             try
             {
-                logger.Debug($"HTTP Get {uri}");
+                // logger.Debug($"HTTP Get {uri}");
                 HttpResponse httpResponse = client.Get(uri, new { type = 4, responseGroup = "medium" });
                 JObject jObject = JsonConvert.DeserializeObject<JObject>(httpResponse.RawText);
                 JArray jArray = jObject["list"].ToObject<JArray>();
@@ -112,7 +114,7 @@ namespace Bangumi.Services
                 logger.Error($"{e.GetType()}:\t{e.Message}");
             }
 
-            logger.Debug($"Search result: [{string.Join(",", searchResult)}]");
+            // logger.Debug($"Search result: [{string.Join(",", searchResult)}]");
             return searchResult;
         }
 
@@ -122,7 +124,7 @@ namespace Bangumi.Services
             BangumiSubject bangumiSubject = null;
             try
             {
-                logger.Debug($"Get {uri}");
+                // logger.Debug($"Get {uri}");
                 HttpResponse httpResponse = client.Get(uri);
                 bangumiSubject = Parse(httpResponse.RawText);
             }

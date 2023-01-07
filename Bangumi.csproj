@@ -93,6 +93,8 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="icon.png" />
+    <Content Include="Screenshots\plugin.png" />
+    <Content Include="Screenshots\settings.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
