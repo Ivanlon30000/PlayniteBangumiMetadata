@@ -5,7 +5,7 @@
 
 Playnite的Bangumi元数据插件
 
-![](Screenshots/plugin.png)
+![plugin](Screenshots/plugin.png)
 
 ## 使用方法  
 1. 在[Bangumi API](https://bangumi.github.io/api/)生成一个Access Token
@@ -38,7 +38,7 @@ Playnite的Bangumi元数据插件
 
 ## 扩展设置
 
-![](Screenshots/settings.png)
+![settings](Screenshots/settings.png)
  + Access Token
  + Tag过滤阈值  
     > Bangumi中“大家把 xx 标注为”字段会被视为标签(`Tags`)，用户投票数低于阈值的tag会被忽略
