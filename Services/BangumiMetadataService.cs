@@ -12,14 +12,18 @@ namespace Bangumi.Services
 {
     public class BangumiMetadataService
     {
-        private static readonly ILogger logger = LogManager.GetLogger();
         private const string BANGUMI_API = "https://api.bgm.tv";
-        private readonly HttpClient client;
 
-        public BangumiMetadataService(string accessToken)
+        private ILogger logger;
+        private HttpClient client;
+        private Bangumi plugin;
+
+        public BangumiMetadataService(Bangumi plugin)
         {
+            this.plugin = plugin;
+            this.logger = plugin.Logger;
             this.client = new HttpClient(BANGUMI_API);
-            this.client.Request.AddExtraHeader("Authorization", $"Bearer {accessToken}");
+            this.client.Request.AddExtraHeader("Authorization", $"Bearer {this.plugin.Settings.AccessToken}");
             this.client.Request.Accept = HttpContentTypes.ApplicationJson;
             this.client.Request.UserAgent =
                 "ivanlon/PlayniteBangumiMetadataProvider/1.0 (https://github.com/Ivanlon30000/PlayniteBangumiMetadata)";
@@ -27,13 +31,13 @@ namespace Bangumi.Services
 
         public Dictionary<string, string> GetMe()
         {
+            logger.Debug("invoke GetMe");
             string uri = "/v0/me";
             try
             {
-                // logger.Debug("get me");
                 HttpResponse httpResponse = client.Get(uri);
                 JObject jObject = JsonConvert.DeserializeObject<JObject>(httpResponse.RawText);
-                Dictionary<string,string> info = new Dictionary<string, string>
+                Dictionary<string, string> info = new Dictionary<string, string>
                 {
                     { "username", jObject["username"].ToObject<string>() },
                     { "nickname", jObject["nickname"].ToObject<string>() },
@@ -41,7 +45,6 @@ namespace Bangumi.Services
                     { "avatar", jObject["avatar"]["large"].ToObject<string>() },
                     { "id", jObject["id"].ToObject<int>().ToString() }
                 };
-                // logger.Debug(JsonConvert.SerializeObject(info));
                 return info;
             }
             catch (Exception e)
@@ -54,8 +57,8 @@ namespace Bangumi.Services
 
         public List<BangumiSubject> Search(string keyword, string pattern = null)
         {
-            // logger.Debug($"Search '{keyword}'");
-            
+            logger.Debug($"Search '{keyword}'");
+
             // 直接解析为bangumi id
             List<BangumiSubject> searchResult = new List<BangumiSubject>();
             uint id = 0;
@@ -65,9 +68,9 @@ namespace Bangumi.Services
             }
             catch (FormatException)
             {
-                
+
             }
-            
+
             // 从名称中提取bangumi id
             if (id == 0 && !string.IsNullOrEmpty(pattern))
             {
@@ -81,7 +84,7 @@ namespace Bangumi.Services
                     }
                     catch (FormatException)
                     {
-                        
+
                     }
                 }
             }
@@ -89,42 +92,42 @@ namespace Bangumi.Services
             if (id > 0)
             {
                 searchResult.Add(GetSubjectById(id));
-                // logger.Debug($"match subject with id {id}");
+                logger.Debug($"match subject with id {id}");
             }
-            
+
 
             // search
             string uri = $"/search/subject/{Uri.EscapeDataString(keyword.Replace("!", ""))}";
 
             try
             {
-                // logger.Debug($"HTTP Get {uri}");
                 HttpResponse httpResponse = client.Get(uri, new { type = 4, responseGroup = "medium" });
                 JObject jObject = JsonConvert.DeserializeObject<JObject>(httpResponse.RawText);
                 JArray jArray = jObject["list"].ToObject<JArray>();
                 searchResult.AddRange(jArray
                     .Where(token => token["id"].ToObject<uint>() != id)
                     .Select(token => new BangumiSubject(
-                    id: token["id"].ToObject<uint>(), name: token["name"].ToObject<string>(),
-                    nameCn: token["name_cn"].ToObject<string>(), summary: token["summary"].ToObject<string>()
-                )));
+                        id: token["id"].ToObject<uint>(), name: token["name"].ToObject<string>(),
+                        nameCn: token["name_cn"].ToObject<string>(), summary: token["summary"].ToObject<string>()
+                    )));
             }
             catch (Exception e)
             {
                 logger.Error($"{e.GetType()}:\t{e.Message}");
             }
 
-            // logger.Debug($"Search result: [{string.Join(",", searchResult)}]");
+            logger.Debug($"Search result: [{string.Join(",", searchResult.Select(subject => subject.id))}]");
             return searchResult;
         }
 
         public BangumiSubject GetSubjectById(uint id)
         {
+            logger.Debug($"invoke GetSubjectById({id})");
+
             string uri = $"/v0/subjects/{id}";
             BangumiSubject bangumiSubject = null;
             try
             {
-                // logger.Debug($"Get {uri}");
                 HttpResponse httpResponse = client.Get(uri);
                 bangumiSubject = Parse(httpResponse.RawText);
             }
@@ -133,95 +136,135 @@ namespace Bangumi.Services
                 logger.Error($"{e.GetType()}: {e.Message}");
             }
 
+            logger.Debug($"Subject: {bangumiSubject}");
             return bangumiSubject;
         }
 
         private BangumiSubject Parse(string json)
         {
-            JObject jObject = JsonConvert.DeserializeObject<JObject>(json);
+            JObject jObject;
+            try
+            {
+                jObject = JObject.Parse(json);
+            }
+            catch (JsonReaderException)
+            {
+                return null;
+            }
+
             if (!jObject.ContainsKey("id"))
             {
                 return null;
             }
-            
-            uint id = jObject["id"].ToObject<uint>();
-            
+
+            // id
+            uint id = 0;
+            try
+            {
+                id = jObject["id"].Value<uint>();
+            }
+            catch (ArgumentException)
+            {
+                return null;
+            }
+
+            // type
             SubjectType type = SubjectType.Game;
-            
+
+            // name
             string name = null;
             try
             {
-                name = jObject["name"].ToObject<string>();
+                JToken nameToken = jObject["name"];
+                if (nameToken != null) name = nameToken.Value<string>();
             }
             catch (ArgumentException)
             {
             }
 
+            // nameCn
             string nameCn = null;
             try
             {
-                nameCn = jObject["name_cn"].ToObject<string>();
+                JToken nameCnToken = jObject["name_cn"];
+                if (nameCnToken != null) nameCn = nameCnToken.Value<string>();
             }
             catch (ArgumentException)
             {
             }
 
+            // summary
             string summary = null;
             try
             {
-                summary = jObject["summary"].ToObject<string>()
-                    .Replace("\r", "")
-                    .Replace("\n", "<br>\n");
+                JToken summaryToken = jObject["summary"];
+                if (summaryToken != null)
+                {
+                    summary = summaryToken.Value<string>()
+                        .Replace("\r", "")
+                        .Replace("\n", "<br>\n");
+                }
             }
             catch (ArgumentException)
             {
             }
 
+            // nsfw
             bool nsfw = false;
             try
             {
-                nsfw = jObject["nsfw"].ToObject<bool>();
+                JToken nsfwToken = jObject["nsfw"];
+                if (nsfwToken != null) nsfw = nsfwToken.Value<bool>();
             }
             catch (ArgumentException)
             {
             }
 
+            // locked
             bool locked = false;
             try
             {
-                locked = jObject["locked"].ToObject<bool>();
+                JToken lockedToken = jObject["locked"];
+                if (lockedToken != null) locked = lockedToken.Value<bool>();
             }
             catch (ArgumentException)
             {
             }
 
+            // date
             string date = null;
             try
             {
-                date = jObject["date"].ToObject<string>();
+                JToken dateToken = jObject["date"];
+                if (dateToken != null) date = dateToken.Value<string>();
             }
             catch (ArgumentException)
             {
             }
 
+            // platform
             string platform = null;
             try
             {
-                platform = jObject["platform"].ToObject<string>();
+                JToken platformToken = jObject["platform"];
+                if (platformToken != null) platform = platformToken.Value<string>();
             }
             catch (ArgumentException)
             {
             }
 
+            // images
             Dictionary<string, string> images = null;
             try
             {
-                images = jObject["images"].ToObject<Dictionary<string, string>>();
+                JToken platformToken = jObject["images"];
+                if (platformToken != null) images = platformToken.ToObject<Dictionary<string, string>>();
             }
-            catch(ArgumentException)
+            catch (ArgumentException)
             {
             }
 
+            // info box
             Dictionary<string, string> textInfobox = new Dictionary<string, string>();
             Dictionary<string, List<string>> listInfobox = new Dictionary<string, List<string>>();
             try
@@ -253,63 +296,76 @@ namespace Bangumi.Services
             {
             }
 
+            // volumes
             int volumes = 0;
             try
             {
-                volumes = jObject["volumes"].ToObject<int>();
+                JToken volumesToken = jObject["volumes"];
+                if (volumesToken != null) volumes = volumesToken.Value<int>();
             }
             catch (ArgumentException)
             {
             }
 
+            // eps
             int eps = 0;
             try
             {
-                eps = jObject["eps"].ToObject<int>();
+                JToken epsToken = jObject["eps"];
+                if (epsToken != null) eps = epsToken.Value<int>();
             }
             catch (ArgumentException)
             {
             }
 
+            // total eps
             int totalEpisodes = 0;
             try
             {
-                totalEpisodes = jObject["total_episodes"].ToObject<int>();
+                JToken totalEpisodesToken = jObject["total_episodes"];
+                if (totalEpisodesToken != null) totalEpisodes = totalEpisodesToken.Value<int>();
             }
             catch (ArgumentException)
             {
             }
 
+            // rating
             BangumiRating rating = null;
-            JToken ratingObject = jObject["rating"];
             try
             {
-                rating = new BangumiRating(
-                    ratingObject["rank"].ToObject<int>(),
-                    ratingObject["total"].ToObject<int>(),
-                    ratingObject["count"].ToObject<Dictionary<string, int>>(),
-                    ratingObject["score"].ToObject<double>());
+                JToken ratingObject = jObject["rating"];
+                if (ratingObject != null)
+                    rating = new BangumiRating(
+                        ratingObject["rank"].ToObject<int>(),
+                        ratingObject["total"].ToObject<int>(),
+                        ratingObject["count"].ToObject<Dictionary<string, int>>(),
+                        ratingObject["score"].ToObject<double>());
             }
             catch (ArgumentException)
             {
             }
 
+            // collection
             Dictionary<string, int> collection = null;
             try
             {
-                collection = jObject["collection"].ToObject<Dictionary<string, int>>();
+                JToken collectionToken = jObject["collection"];
+                if (collectionToken != null) collection = collectionToken.ToObject<Dictionary<string, int>>();
             }
             catch (ArgumentException)
             {
             }
 
+            // tags
             List<BangumiTag> tags = null;
             try
             {
-                tags = new List<BangumiTag>(
-                    jObject["tags"].Select(token =>
-                        new BangumiTag(token["name"].ToObject<string>(), token["count"].ToObject<int>()))
-                );
+                JToken tagsToken = jObject["tags"];
+                if (tagsToken != null)
+                    tags = new List<BangumiTag>(
+                        tagsToken.Select(token =>
+                            new BangumiTag(token["name"].ToObject<string>(), token["count"].ToObject<int>()))
+                    );
             }
             catch (ArgumentException)
             {

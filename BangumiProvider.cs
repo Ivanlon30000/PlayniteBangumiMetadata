@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Bangumi.Models;
 using Bangumi.Services;
+using Bangumi.Utils;
 using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Models;
@@ -11,13 +12,12 @@ namespace Bangumi
     public class BangumiProvider : OnDemandMetadataProvider
     {
         private ILogger logger;
-        private readonly BangumiSettings settings;
-        private readonly MetadataRequestOptions options;
-        private readonly Bangumi plugin;
-        private readonly IPlayniteAPI playniteApi;
+
+        private MetadataRequestOptions options;
+        private Bangumi plugin;
+        
         private List<MetadataField> availableFields;
         private PlayniteSubject subject;
-        private BangumiMetadataService service;
         public override List<MetadataField> AvailableFields
         {
             get
@@ -33,21 +33,20 @@ namespace Bangumi
 
         public BangumiProvider(MetadataRequestOptions options, Bangumi plugin)
         {
-            this.logger = plugin.Logger;
             this.options = options;
             this.plugin = plugin;
-            this.playniteApi = plugin.PlayniteApi;
-            this.service = plugin.Service;
-            this.settings = plugin.Settings;
+            this.logger = plugin.Logger;
+            
+            logger.Debug("new BangumiProvider");
         }
 
         private List<MetadataField> GetAvailableFields()
         {
-            // logger.Debug("invoke GetAvailableFields");
+            logger.Debug("invoke GetAvailableFields");
             List<MetadataField> metadataFields = new List<MetadataField>();
             if (GetBangumiMetadata() && subject !=null)
             {
-                // logger.Debug(subject.ToString());
+                logger.Debug(subject.ToString());
                 if (!string.IsNullOrEmpty(subject.Name))
                 {
                     metadataFields.Add(MetadataField.Name);
@@ -100,44 +99,47 @@ namespace Bangumi
                 {
                     metadataFields.Add(MetadataField.Platform);
                 }
-                
             }
-            // logger.Debug(string.Join(",", metadataFields));
+            logger.Debug(string.Join(",", metadataFields));
             return metadataFields;
         }
 
+        /*
+         * 根据名称 `options.GameData.Name` 获取 metadata
+         */
         private bool GetBangumiMetadata()
         {
-            // logger.Debug("invoke GetBangumiMetadata");
+            logger.Debug("invoke GetBangumiMetadata");
             if (subject != null)
             {
+                logger.Debug($@"Subject not null: {subject}");
                 return true;
             }
 
             if (options.IsBackgroundDownload)
             {
+                logger.Debug("Background download");
                 return false;
             }
 
-            if (settings.SkipSelectWindowWhenSearchResultUnique)
+            if (plugin.Settings.SkipSelectWindowWhenSearchResultUnique)
             {
-                List<BangumiSubject> searchResult = service.Search(options.GameData.Name, settings.NameFormatPattern);
+                List<BangumiSubject> searchResult = plugin.Service.Search(options.GameData.Name, plugin.Settings.NameFormatPattern);
                 if (searchResult.Count == 1)
                 {
-                    subject = new PlayniteSubject(service.GetSubjectById(searchResult[0].id), settings);
+                    subject = new PlayniteSubject(plugin.Service.GetSubjectById(searchResult[0].id), plugin.Settings);
+                    logger.Debug($@"Only 1 search result: {subject}");
                     return subject != null;
                 }
             }
 
-            SearchOption item = ((SearchOption)playniteApi.Dialogs.ChooseItemWithSearch(null,
+            SearchOption item = ((SearchOption)plugin.PlayniteApi.Dialogs.ChooseItemWithSearch(null,
                 searchKeyword =>
                 {
                     List<GenericItemOption> itemOptions = new List<GenericItemOption>();
-                    foreach (var bangumiSubject in service.Search(searchKeyword, settings.NameFormatPattern))
+                    foreach (var bangumiSubject in plugin.Service.Search(searchKeyword, plugin.Settings.NameFormatPattern))
                     {
-                        string optionName = string.IsNullOrEmpty(bangumiSubject.nameCn)
-                            ? bangumiSubject.name
-                            : $"{bangumiSubject.name}({bangumiSubject.nameCn})";
+                        string optionName = PlayniteSubject.FormatName(bangumiSubject, plugin.Settings);
                         string optionDescription = bangumiSubject.summary
                             .Replace("\r", "")
                             .Replace("\n", "");
@@ -154,11 +156,11 @@ namespace Bangumi
             
             if (item != null)
             {
-                // logger.Debug(item.ToString());
-                subject = new PlayniteSubject(service.GetSubjectById(item.Id), settings);
-                
+                logger.Debug($@"selected item: {item}");
+                subject = new PlayniteSubject(plugin.Service.GetSubjectById(item.Id), plugin.Settings);
             }
-
+            
+            logger.Debug($@"subject is {subject}, GetBangumiMetadata returned");
             return subject != null;
         }
         
@@ -288,7 +290,6 @@ namespace Bangumi
             // logger.Debug("invoke GetGenres");
             if (AvailableFields.Contains(MetadataField.Genres))
             {
-                // logger.Debug(subject.Genres.Count.ToString());
                 return subject.Genres;
             }
             return base.GetGenres(args);

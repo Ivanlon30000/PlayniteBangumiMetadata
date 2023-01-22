@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using Playnite.SDK;
 using Playnite.SDK.Models;
 
 namespace Bangumi.Models
@@ -23,18 +24,29 @@ namespace Bangumi.Models
         }
 
         // getter
-        public string Name
+        public string Name => FormatName(bangumiSubject, settings);
+        // {
+        //     get
+        //     {
+        //         return (string.IsNullOrEmpty(bangumiSubject.nameCn)
+        //                 ? settings.NameFormatNameCnNotExists
+        //                 : settings.NameFormatNameCnExists)
+        //             .Replace("%name%", bangumiSubject.name)
+        //             .Replace("%name_cn%", bangumiSubject.nameCn)
+        //             .Replace("%id%", bangumiSubject.id.ToString())
+        //             .Replace("%%", "%");
+        //     }
+        // }
+
+        public static string FormatName(BangumiSubject subject, BangumiSettings settings)
         {
-            get
-            {
-                return (string.IsNullOrEmpty(bangumiSubject.nameCn)
-                        ? settings.NameFormatNameCnNotExists
-                        : settings.NameFormatNameCnExists)
-                    .Replace("%name%", bangumiSubject.name)
-                    .Replace("%name_cn%", bangumiSubject.nameCn)
-                    .Replace("%id%", bangumiSubject.id.ToString())
-                    .Replace("%%", "%");
-            }
+            return (string.IsNullOrEmpty(subject.nameCn)
+                    ? settings.NameFormatNameCnNotExists
+                    : settings.NameFormatNameCnExists)
+                .Replace("%name%", subject.name)
+                .Replace("%name_cn%", subject.nameCn)
+                .Replace("%id%", subject.id.ToString())
+                .Replace("%%", "%");
         }
 
         private string description;

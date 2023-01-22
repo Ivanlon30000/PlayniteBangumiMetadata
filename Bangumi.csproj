@@ -68,6 +68,7 @@
     <Compile Include="Models\PlayniteSubject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BangumiMetadataService.cs" />
+    <Compile Include="Utils\Logger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="extension.yaml">

@@ -8,7 +8,7 @@
     
     <StackPanel Margin="10">
         <StackPanel Margin="5">
-            <TextBlock Text="Access Token"/>
+            <TextBlock Text="Access Token (可选)"/>
             <TextBox Text="{Binding Settings.AccessToken}"/>
             <TextBlock Text="{Binding Settings.AccessTokenStatusMessage}"></TextBlock>
         </StackPanel>
@@ -46,6 +46,10 @@
             <TextBox Text="{Binding Settings.NsfwTag}"></TextBox>
             <TextBlock>为SFW游戏添加分级标签（留空不添加，英文逗号分隔）</TextBlock>
             <TextBox Text="{Binding Settings.SfwTag}"></TextBox>
+        </StackPanel>
+        
+        <StackPanel Margin="5">
+            <CheckBox IsChecked="{Binding Settings.EnableDebug}">开启调试</CheckBox>
         </StackPanel>
     </StackPanel>
 </UserControl>

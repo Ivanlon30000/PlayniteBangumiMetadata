@@ -4,18 +4,21 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using Bangumi.Services;
+using Bangumi.Utils;
 
 namespace Bangumi
 {
     public class Bangumi : MetadataPlugin
     {
-        private static readonly ILogger logger = LogManager.GetLogger();
-        public ILogger Logger => logger;
-
+        private ILogger logger;
         private BangumiSettingsViewModel settings { get; set; }
+        
+        
         public BangumiSettings Settings => settings.Settings;
-
         public BangumiMetadataService Service { get; }
+        public ILogger Logger => logger;
+        
+        
 
         public override Guid Id { get; } = Guid.Parse("fea02b9a-ab77-47e3-8fb1-6512c9261fbe");
 
@@ -43,15 +46,17 @@ namespace Bangumi
         public Bangumi(IPlayniteAPI api) : base(api)
         {
             settings = new BangumiSettingsViewModel(this);
+            logger = new Logger(LogManager.GetLogger(), Settings.EnableDebug);
             Properties = new MetadataPluginProperties
             {
                 HasSettings = true
             };
-            Service = new BangumiMetadataService(settings.Settings.AccessToken);
+            Service = new BangumiMetadataService(this);
         }
 
         public override OnDemandMetadataProvider GetMetadataProvider(MetadataRequestOptions options)
         {
+            logger.Debug($@"invoke GetMetadataProvider:{options}");
             return new BangumiProvider(options, this);
         }
 

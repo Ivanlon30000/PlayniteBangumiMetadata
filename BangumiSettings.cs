@@ -1,7 +1,7 @@
-﻿using Playnite.SDK;
+﻿using System;
+using Playnite.SDK;
 using Playnite.SDK.Data;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
 
 namespace Bangumi
@@ -24,6 +24,8 @@ namespace Bangumi
 
         public string NsfwTag { get; set; } = string.Empty;
         public string SfwTag { get; set; } = string.Empty;
+        
+        public bool EnableDebug { get; set; } = false;
 
         [DontSerialize] 
         public string AccessTokenStatusMessage { get; set; } = string.Empty;
@@ -74,8 +76,19 @@ namespace Bangumi
         public void BeginEdit()
         {
             // Code executed when settings view is opened and user starts editing values.
-            Dictionary<string,string> info = plugin.Service.GetMe();
-            Settings.AccessTokenStatusMessage = info != null ? $"当前登录：{info["nickname"]}({info["username"]})" : "访问Bangumi API失败，请检查Access Token";
+            if (String.IsNullOrEmpty(settings.AccessToken))
+            {
+                Settings.AccessTokenStatusMessage = "未登录，部分条目搜索不到";
+            }
+            else
+            {
+                Dictionary<string,string> info = plugin.Service.GetMe();
+                Settings.AccessTokenStatusMessage = 
+                    info != null 
+                    ? $"当前登录：{info["nickname"]}({info["username"]})" 
+                    : "访问Bangumi API失败，请检查Access Token";
+            }
+            
             editingClone = Serialization.GetClone(Settings);
         }
 
@@ -99,11 +112,11 @@ namespace Bangumi
             // Executed before EndEdit is called and EndEdit is not called if false is returned.
             // List of errors is presented to user if verification fails.
             errors = new List<string>();
-            if (string.IsNullOrEmpty(settings.AccessToken))
-            {
-                errors.Add("请填写Access Token");
-                return false;
-            }
+            // if (string.IsNullOrEmpty(settings.AccessToken))
+            // {
+            //     errors.Add("请填写Access Token");
+            //     return false;
+            // }
             
             return true;
         }
