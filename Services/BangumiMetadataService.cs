@@ -45,6 +45,7 @@ namespace Bangumi.Services
                     { "avatar", jObject["avatar"]["large"].ToObject<string>() },
                     { "id", jObject["id"].ToObject<int>().ToString() }
                 };
+                logger.Debug("GetMe success");
                 return info;
             }
             catch (Exception e)

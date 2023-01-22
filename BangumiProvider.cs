@@ -122,17 +122,6 @@ namespace Bangumi
                 return false;
             }
 
-            if (plugin.Settings.SkipSelectWindowWhenSearchResultUnique)
-            {
-                List<BangumiSubject> searchResult = plugin.Service.Search(options.GameData.Name, plugin.Settings.NameFormatPattern);
-                if (searchResult.Count == 1)
-                {
-                    subject = new PlayniteSubject(plugin.Service.GetSubjectById(searchResult[0].id), plugin.Settings);
-                    logger.Debug($@"Only 1 search result: {subject}");
-                    return subject != null;
-                }
-            }
-
             SearchOption item = ((SearchOption)plugin.PlayniteApi.Dialogs.ChooseItemWithSearch(null,
                 searchKeyword =>
                 {

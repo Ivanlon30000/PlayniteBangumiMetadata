@@ -20,8 +20,6 @@ namespace Bangumi
 
         public string NameFormatPattern { get; set; } = @"^(?<id>\d+)$";
 
-        public bool SkipSelectWindowWhenSearchResultUnique { get; set; } = true;
-
         public string NsfwTag { get; set; } = string.Empty;
         public string SfwTag { get; set; } = string.Empty;
         

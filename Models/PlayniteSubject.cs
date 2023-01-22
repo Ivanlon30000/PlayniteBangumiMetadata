@@ -22,8 +22,10 @@ namespace Bangumi.Models
         {
             return JsonConvert.SerializeObject(this);
         }
-
-        // getter
+        
+        /*
+         * getters
+         */
         public string Name => FormatName(bangumiSubject, settings);
         // {
         //     get
