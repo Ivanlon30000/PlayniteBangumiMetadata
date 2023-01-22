@@ -10,7 +10,7 @@ namespace Bangumi
 {
     public class Bangumi : MetadataPlugin
     {
-        public static readonly string VERSION = "1.0";
+        public static readonly string VERSION = "1.1.0 beta";
         private ILogger logger;
         private BangumiSettingsViewModel settings { get; set; }
         

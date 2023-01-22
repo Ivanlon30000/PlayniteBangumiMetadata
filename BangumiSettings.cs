@@ -27,7 +27,9 @@ namespace Bangumi
 
         [DontSerialize] 
         public string AccessTokenStatusMessage { get; set; } = string.Empty;
-        
+
+        [DontSerialize] public string VersionString => $"Ver. {Bangumi.VERSION}";
+
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonDontSerialize` ignore attribute.
@@ -114,6 +116,7 @@ namespace Bangumi
             // Executed before EndEdit is called and EndEdit is not called if false is returned.
             // List of errors is presented to user if verification fails.
             errors = new List<string>();
+            
             return true;
         }
     }

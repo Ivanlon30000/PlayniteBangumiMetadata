@@ -105,7 +105,8 @@ namespace Bangumi
         }
 
         /*
-         * 根据名称 `options.GameData.Name` 获取 metadata
+         * 根据名称 `options.GameData.Name` 获取 metadata；
+         * 获取成功返回 true
          */
         private bool GetBangumiMetadata()
         {

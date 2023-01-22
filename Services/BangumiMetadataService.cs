@@ -29,31 +29,47 @@ namespace Bangumi.Services
                 $"ivanlon/PlayniteBangumiMetadataProvider/{Bangumi.VERSION} (https://github.com/Ivanlon30000/PlayniteBangumiMetadata)";
         }
 
+        private Dictionary<string, string> info;
         public Dictionary<string, string> GetMe()
         {
             logger.Debug("invoke GetMe");
-            string uri = "/v0/me";
-            try
+            if (info != null)
             {
-                HttpResponse httpResponse = client.Get(uri);
-                JObject jObject = JsonConvert.DeserializeObject<JObject>(httpResponse.RawText);
-                Dictionary<string, string> info = new Dictionary<string, string>
+                string uri = "/v0/me";
+                string jsonRaw = null;
+                try
                 {
-                    { "username", jObject["username"].ToObject<string>() },
-                    { "nickname", jObject["nickname"].ToObject<string>() },
-                    { "sign", jObject["sign"].ToObject<string>() },
-                    { "avatar", jObject["avatar"]["large"].ToObject<string>() },
-                    { "id", jObject["id"].ToObject<int>().ToString() }
-                };
-                logger.Debug("GetMe success");
-                return info;
-            }
-            catch (Exception e)
-            {
-                logger.Error($"get me error: {e.GetType()}: {e.Message}");
+                    HttpResponse httpResponse = client.Get(uri);
+                    jsonRaw = httpResponse.RawText;
+                }
+                catch (Exception e)
+                {
+                    logger.Warn($"invoke `GetMe` network error: {e.GetType()}: {e.Message}");
+                }
+
+                if (!String.IsNullOrEmpty(jsonRaw))
+                {
+                    try
+                    {
+                        JObject jObject = JObject.Parse(jsonRaw);
+                        info = new Dictionary<string, string>
+                        {
+                            { "username", jObject["username"].ToObject<string>() },
+                            { "nickname", jObject["nickname"].ToObject<string>() },
+                            { "sign", jObject["sign"].ToObject<string>() },
+                            { "avatar", jObject["avatar"]["large"].ToObject<string>() },
+                            { "id", jObject["id"].ToObject<int>().ToString() }
+                        };
+                    }
+                    catch (Exception e)
+                    {
+                        logger.Warn($"invoke parse error: {e.GetType()}: {e.Message}; the access token may be wrong");
+                    }
+                }
             }
 
-            return null;
+            logger.Debug(info != null ? "GetMe success" : "GetMe fail");
+            return info;
         }
 
         public List<BangumiSubject> Search(string keyword, string pattern = null)

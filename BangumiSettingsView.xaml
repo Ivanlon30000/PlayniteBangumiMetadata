@@ -47,5 +47,9 @@
         <StackPanel Margin="5">
             <CheckBox IsChecked="{Binding Settings.EnableDebug}">开启调试 (重启Playnite后生效)</CheckBox>
         </StackPanel>
+        
+        <StackPanel Margin="5">
+            <TextBlock HorizontalAlignment="Right" Text="{Binding Settings.VersionString}"></TextBlock>
+        </StackPanel>
     </StackPanel>
 </UserControl>
