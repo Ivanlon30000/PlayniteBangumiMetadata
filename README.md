@@ -8,10 +8,10 @@ Playnite的Bangumi元数据插件
 ![plugin](Screenshots/plugin.png)
 
 ## 使用方法  
-1. 在[Bangumi API](https://bangumi.github.io/api/)生成一个Access Token
-2. 从[Release](https://github.com/Ivanlon30000/PlayniteBangumiMetadata/releases)中下载`.pext`插件文件
-3. 安装插件
-4. 在Playnite的扩展设置-附加组件-元数据来源-Bangumi-Access Token中填写你的Access Token
+1. 从[Release](https://github.com/Ivanlon30000/PlayniteBangumiMetadata/releases)中下载`.pext`插件文件
+2. 安装插件
+3. 在[Bangumi API](https://bangumi.github.io/api/)生成一个Access Token (可选)
+4. 在Playnite的扩展设置-附加组件-元数据来源-Bangumi-Access Token中填写你的Access Token (可选)
 
 ## 提供的字段  
 + 社区评分(`CommunityScore`)  
