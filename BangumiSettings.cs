@@ -88,7 +88,7 @@ namespace Bangumi
                 Settings.AccessTokenStatusMessage = 
                     info != null 
                     ? $"当前登录：{info["nickname"]}({info["username"]})" 
-                    : "访问Bangumi API失败，请检查Access Token";
+                    : "访问Bangumi API失败，请检查Access Token并重启Playnite";
             }
             
             editingClone = Serialization.GetClone(Settings);
