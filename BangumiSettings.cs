@@ -43,6 +43,7 @@ namespace Bangumi
         private BangumiSettings editingClone { get; set; }
 
         private BangumiSettings settings;
+
         public BangumiSettings Settings
         {
             get => settings;
@@ -52,15 +53,16 @@ namespace Bangumi
                 OnPropertyChanged();
             }
         }
+
         private ILogger logger;
-        
+
         public BangumiSettingsViewModel(Bangumi plugin)
         {
             // Injecting your plugin instance is required for Save/Load method
             // because Playnite saves data to a location based on what plugin requested the operation.
             this.plugin = plugin;
             this.logger = plugin.Logger;
-            
+
             // Load saved settings.
             var savedSettings = plugin.LoadPluginSettings<BangumiSettings>();
 
@@ -74,27 +76,11 @@ namespace Bangumi
                 Settings = new BangumiSettings();
             }
         }
-
-        private Dictionary<string, string> info;
+        
         public void BeginEdit()
         {
             // Code executed when settings view is opened and user starts editing values.
-            if (String.IsNullOrEmpty(settings.AccessToken))
-            {
-                Settings.AccessTokenStatusMessage = "未登录，部分条目搜索不到";
-            }
-            else
-            {
-                if (info == null)
-                {
-                    info = plugin.Service.GetMe();
-                }
-                Settings.AccessTokenStatusMessage = 
-                    info != null 
-                    ? $"当前登录：{info["nickname"]}({info["username"]})" 
-                    : "访问Bangumi API失败，请检查Access Token并重启Playnite";
-            }
-            
+            updateLoginStatus();
             editingClone = Serialization.GetClone(Settings);
         }
 
@@ -121,10 +107,27 @@ namespace Bangumi
             if (!String.IsNullOrEmpty(Settings.AccessToken) && plugin.Service.GetMe() == null)
             {
                 errors.Add("使用Access Token认证失败");
+                updateLoginStatus();
                 return false;
             }
 
             return true;
+        }
+
+        private void updateLoginStatus()
+        {
+            if (String.IsNullOrEmpty(settings.AccessToken))
+            {
+                Settings.AccessTokenStatusMessage = "未登录，部分条目搜索不到";
+            }
+            else
+            {
+                var loginStatus = plugin.Service.GetMe();
+                Settings.AccessTokenStatusMessage =
+                    loginStatus != null
+                        ? $"当前登录：{loginStatus["nickname"]}({loginStatus["username"]})"
+                        : "访问Bangumi API失败，请检查Access Token并重启Playnite";
+            }
         }
     }
 }
