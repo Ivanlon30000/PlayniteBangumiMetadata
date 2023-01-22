@@ -188,7 +188,7 @@ namespace Bangumi
 
         public override MetadataFile GetCoverImage(GetMetadataFieldArgs args)
         {
-            // logger.Debug("invoke GetCoverImage");
+            logger.Debug("invoke GetCoverImage");
             if (AvailableFields.Contains(MetadataField.CoverImage))
             {
                 return subject.CoverImage;
@@ -198,7 +198,7 @@ namespace Bangumi
 
         public override string GetDescription(GetMetadataFieldArgs args)
         {
-            // logger.Debug("invoke GetDescription");
+            logger.Debug("invoke GetDescription");
             if (AvailableFields.Contains(MetadataField.Description))
             {
                 return subject.Description;
@@ -208,7 +208,7 @@ namespace Bangumi
 
         public override IEnumerable<MetadataProperty> GetDevelopers(GetMetadataFieldArgs args)
         {
-            // logger.Debug("invoke GetDevelopers");
+            logger.Debug("invoke GetDevelopers");
             if (AvailableFields.Contains(MetadataField.Developers))
             {
                 return subject.Developers;
@@ -218,7 +218,7 @@ namespace Bangumi
 
         public override IEnumerable<Link> GetLinks(GetMetadataFieldArgs args)
         {
-            // logger.Debug("invoke GetLinks");
+            logger.Debug("invoke GetLinks");
             if (AvailableFields.Contains(MetadataField.Links))
             {
                 return subject.Links;
@@ -229,7 +229,7 @@ namespace Bangumi
 
         public override string GetName(GetMetadataFieldArgs args)
         {
-            // logger.Debug("invoke GetName");
+            logger.Debug("invoke GetName");
             if (AvailableFields.Contains(MetadataField.Name))
             {
                 return subject.Name;
@@ -239,7 +239,7 @@ namespace Bangumi
 
         public override IEnumerable<MetadataProperty> GetPublishers(GetMetadataFieldArgs args)
         {
-            // logger.Debug("invoke GetPublishers");
+            logger.Debug("invoke GetPublishers");
             if (AvailableFields.Contains(MetadataField.Publishers))
             {
                 return subject.Publishers;
@@ -249,7 +249,7 @@ namespace Bangumi
 
         public override ReleaseDate? GetReleaseDate(GetMetadataFieldArgs args)
         {
-            // logger.Debug("invoke GetReleaseDate");
+            logger.Debug("invoke GetReleaseDate");
             if (AvailableFields.Contains(MetadataField.ReleaseDate))
             {
                 return subject.ReleaseDate;
@@ -259,7 +259,7 @@ namespace Bangumi
 
         public override IEnumerable<MetadataProperty> GetTags(GetMetadataFieldArgs args)
         {
-            // logger.Debug("invoke GetTags");
+            logger.Debug("invoke GetTags");
             if (AvailableFields.Contains(MetadataField.Tags))
             {
                 return subject.Tags;
@@ -269,6 +269,7 @@ namespace Bangumi
 
         public override IEnumerable<MetadataProperty> GetAgeRatings(GetMetadataFieldArgs args)
         {
+            logger.Debug("invoke GetAgeRatings");
             if (AvailableFields.Contains(MetadataField.AgeRating))
             {
                 return subject.AgeRating;
@@ -278,6 +279,7 @@ namespace Bangumi
 
         public override IEnumerable<MetadataProperty> GetPlatforms(GetMetadataFieldArgs args)
         {
+            logger.Debug("invoke GetPlatforms");
             if (AvailableFields.Contains(MetadataField.Platform))
             {
                 return subject.Platform;
@@ -287,7 +289,7 @@ namespace Bangumi
 
         public override IEnumerable<MetadataProperty> GetGenres(GetMetadataFieldArgs args)
         {
-            // logger.Debug("invoke GetGenres");
+            logger.Debug("invoke GetGenres");
             if (AvailableFields.Contains(MetadataField.Genres))
             {
                 return subject.Genres;
