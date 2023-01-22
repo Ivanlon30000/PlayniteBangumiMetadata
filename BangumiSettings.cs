@@ -71,6 +71,7 @@ namespace Bangumi
             }
         }
 
+        private Dictionary<string, string> info;
         public void BeginEdit()
         {
             // Code executed when settings view is opened and user starts editing values.
@@ -80,7 +81,10 @@ namespace Bangumi
             }
             else
             {
-                Dictionary<string,string> info = plugin.Service.GetMe();
+                if (info == null)
+                {
+                    info = plugin.Service.GetMe();
+                }
                 Settings.AccessTokenStatusMessage = 
                     info != null 
                     ? $"当前登录：{info["nickname"]}({info["username"]})" 
@@ -110,12 +114,6 @@ namespace Bangumi
             // Executed before EndEdit is called and EndEdit is not called if false is returned.
             // List of errors is presented to user if verification fails.
             errors = new List<string>();
-            // if (string.IsNullOrEmpty(settings.AccessToken))
-            // {
-            //     errors.Add("请填写Access Token");
-            //     return false;
-            // }
-            
             return true;
         }
     }

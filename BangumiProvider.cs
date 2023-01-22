@@ -100,7 +100,7 @@ namespace Bangumi
                     metadataFields.Add(MetadataField.Platform);
                 }
             }
-            logger.Debug(string.Join(",", metadataFields));
+            logger.Debug($"available fields:{string.Join(",", metadataFields)}");
             return metadataFields;
         }
 

@@ -26,7 +26,7 @@ namespace Bangumi.Services
             this.client.Request.AddExtraHeader("Authorization", $"Bearer {this.plugin.Settings.AccessToken}");
             this.client.Request.Accept = HttpContentTypes.ApplicationJson;
             this.client.Request.UserAgent =
-                "ivanlon/PlayniteBangumiMetadataProvider/1.0 (https://github.com/Ivanlon30000/PlayniteBangumiMetadata)";
+                $"ivanlon/PlayniteBangumiMetadataProvider/{Bangumi.VERSION} (https://github.com/Ivanlon30000/PlayniteBangumiMetadata)";
         }
 
         public Dictionary<string, string> GetMe()
