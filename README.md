@@ -39,7 +39,7 @@ Playnite的Bangumi元数据插件
 ## 扩展设置
 
 ![](Screenshots/settings.png)
- + Access Token
+ + Access Token (可选)
  + Tag过滤阈值  
     > Bangumi中“大家把 xx 标注为”字段会被视为标签(`Tags`)，用户投票数低于阈值的tag会被忽略
  + 使用封面作为背景  
@@ -53,6 +53,10 @@ Playnite的Bangumi元数据插件
    > 插件会首先尝试将游戏名称作为Bangumi Id获取游戏信息  
    > 然后根据此项设置尝试匹配Bangumi Id（需要使用id捕获组来标记id）  
    > 最后搜索游戏名
- + 搜索结果唯一时跳过搜索窗口  
  + 为NSFW/SFW游戏添加分级标签  
-
+ + 开启调试  
+   > 开启后会将log写入`extensions.log`文件  
+   > 该文件的位置在`%AppData%\Playnite`(安装版)或Playnite的安装文件夹(便携版)
+   > 反馈bug时请提交该文件
+ 
+## 

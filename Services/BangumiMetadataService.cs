@@ -43,6 +43,7 @@ namespace Bangumi.Services
             }
             else
             {
+                client.Request.RawHeaders.Remove("Authorization");
                 logger.Debug("without token");
             }
 
@@ -53,7 +54,7 @@ namespace Bangumi.Services
             }
             catch (Exception e)
             {
-                logger.Warn($"invoke `GetMe` network error: {e.GetType()}: {e.Message}");
+                logger.Warn($"GetMe network error: {e.GetType()}: {e.Message}");
             }
 
             return rawContent;
@@ -83,7 +84,7 @@ namespace Bangumi.Services
                 }
                 catch (Exception e)
                 {
-                    logger.Warn($"invoke parse error: {e.GetType()}: {e.Message}; the access token may be wrong");
+                    logger.Warn($"GetMe parse error: {e.GetType()}: {e.Message}; the access token may be wrong");
                 }
             }
             
@@ -149,7 +150,7 @@ namespace Bangumi.Services
                 }
                 catch (Exception e)
                 {
-                    logger.Warn($"{e.GetType()}:\t{e.Message}");
+                    logger.Warn($"Search({keyword}:\t{e.GetType()}:\t{e.Message}");
                 }
             }
             
@@ -172,7 +173,7 @@ namespace Bangumi.Services
                 }
                 catch (Exception e)
                 {
-                    logger.Warn($"{e.GetType()}: {e.Message}");
+                    logger.Warn($"GetSubjectById({id}):\t{e.GetType()}: {e.Message}");
                 }
             }
             

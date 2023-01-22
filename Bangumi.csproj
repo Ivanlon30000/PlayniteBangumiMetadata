@@ -94,6 +94,8 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="icon.png" />
+    <Content Include="LICENSE" />
+    <Content Include="README.md" />
     <Content Include="Screenshots\plugin.png" />
     <Content Include="Screenshots\settings.png" />
   </ItemGroup>
