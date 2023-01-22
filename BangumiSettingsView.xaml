@@ -8,7 +8,7 @@
     
     <StackPanel Margin="10">
         <StackPanel Margin="5">
-            <TextBlock Text="Access Token (可选，重启Playnite后生效)"/>
+            <TextBlock Text="Access Token"/>
             <TextBox Text="{Binding Settings.AccessToken}"/>
             <TextBlock Text="{Binding Settings.AccessTokenStatusMessage}"></TextBlock>
         </StackPanel>

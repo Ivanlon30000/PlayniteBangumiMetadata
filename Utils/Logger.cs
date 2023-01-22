@@ -16,12 +16,12 @@ namespace Bangumi.Utils
         
         public void Info(string message)
         {
-            if(enabled) logger.Info(message);
+            logger.Info(message);
         }
 
         public void Info(Exception exception, string message)
         {
-            if(enabled) logger.Info(exception, message);
+            logger.Info(exception, message);
         }
 
         public void Debug(string message)
@@ -36,32 +36,32 @@ namespace Bangumi.Utils
 
         public void Warn(string message)
         {
-            if(enabled) logger.Warn(message);
+            logger.Warn(message);
         }
 
         public void Warn(Exception exception, string message)
         {
-            if(enabled) logger.Warn(exception, message);
+            logger.Warn(exception, message);
         }
 
         public void Error(string message)
         {
-            if(enabled) logger.Error(message);
+            logger.Error(message);
         }
 
         public void Error(Exception exception, string message)
         {
-            if(enabled) logger.Error(exception, message);
+            logger.Error(exception, message);
         }
 
         public void Trace(string message)
         {
-            if(enabled) logger.Trace(message);
+            logger.Trace(message);
         }
 
         public void Trace(Exception exception, string message)
         {
-            if(enabled) logger.Trace(exception, message);
+            logger.Trace(exception, message);
         }
     }
 }

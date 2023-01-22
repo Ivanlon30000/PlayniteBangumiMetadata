@@ -53,6 +53,18 @@ namespace Bangumi
                 HasSettings = true
             };
             Service = new BangumiMetadataService(this);
+            
+            logger.Info($"Bangumi Initialization. Ver.{VERSION}");
+            logger.Info($"Settings:");
+            logger.Info($"\tAccessToken: (hidden)({Settings.AccessToken.Length})");
+            logger.Info($"\tTagThresh: {Settings.TagThres}");
+            logger.Info($"\tCoverImageAsBackgroundImage: {Settings.CoverImageAsBackgroundImage}");
+            logger.Info($"\tNameFormatNameCnExists: {Settings.NameFormatNameCnExists}");
+            logger.Info($"\tNameFormatNameCnNotExists: {Settings.NameFormatNameCnNotExists}");
+            logger.Info($"\tNameFormatPattern: {Settings.NameFormatPattern}");
+            logger.Info($"\tNsfwTag: {Settings.NsfwTag}");
+            logger.Info($"\tSfwTag: {Settings.SfwTag}");
+            logger.Info($"\tEnableDebug: {Settings.EnableDebug}");
         }
 
         public override OnDemandMetadataProvider GetMetadataProvider(MetadataRequestOptions options)

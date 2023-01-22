@@ -52,12 +52,14 @@ namespace Bangumi
                 OnPropertyChanged();
             }
         }
-
+        private ILogger logger;
+        
         public BangumiSettingsViewModel(Bangumi plugin)
         {
             // Injecting your plugin instance is required for Save/Load method
             // because Playnite saves data to a location based on what plugin requested the operation.
             this.plugin = plugin;
+            this.logger = plugin.Logger;
             
             // Load saved settings.
             var savedSettings = plugin.LoadPluginSettings<BangumiSettings>();
@@ -116,7 +118,12 @@ namespace Bangumi
             // Executed before EndEdit is called and EndEdit is not called if false is returned.
             // List of errors is presented to user if verification fails.
             errors = new List<string>();
-            
+            if (!String.IsNullOrEmpty(Settings.AccessToken) && plugin.Service.GetMe() == null)
+            {
+                errors.Add("使用Access Token认证失败");
+                return false;
+            }
+
             return true;
         }
     }

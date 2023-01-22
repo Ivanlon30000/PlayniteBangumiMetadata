@@ -4,6 +4,7 @@ using EasyHttp.Http;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using EasyHttp.Infrastructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Playnite.SDK;
@@ -22,54 +23,71 @@ namespace Bangumi.Services
         {
             this.plugin = plugin;
             this.logger = plugin.Logger;
-            this.client = new HttpClient(BANGUMI_API);
-            this.client.Request.AddExtraHeader("Authorization", $"Bearer {this.plugin.Settings.AccessToken}");
-            this.client.Request.Accept = HttpContentTypes.ApplicationJson;
-            this.client.Request.UserAgent =
-                $"ivanlon/PlayniteBangumiMetadataProvider/{Bangumi.VERSION} (https://github.com/Ivanlon30000/PlayniteBangumiMetadata)";
+            this.client = new HttpClient(BANGUMI_API)
+            {
+                Request =
+                {
+                    Accept = HttpContentTypes.ApplicationJson,
+                    UserAgent = $"ivanlon/PlayniteBangumiMetadataProvider/{Bangumi.VERSION} (https://github.com/Ivanlon30000/PlayniteBangumiMetadata)"
+                }
+            };
         }
 
-        private Dictionary<string, string> info;
+        private string DoGet(string uri, object query = null)
+        {
+            string rawContent = null;
+            logger.Debug($"Get {uri}");
+            if (!string.IsNullOrEmpty(plugin.Settings.AccessToken))
+            {
+                client.Request.RawHeaders["Authorization"] = $"Bearer {this.plugin.Settings.AccessToken}";
+            }
+            else
+            {
+                logger.Debug("without token");
+            }
+
+            try
+            {
+                HttpResponse response = client.Get(uri, query);
+                rawContent = response.RawText;
+            }
+            catch (Exception e)
+            {
+                logger.Warn($"invoke `GetMe` network error: {e.GetType()}: {e.Message}");
+            }
+
+            return rawContent;
+        }
+
         public Dictionary<string, string> GetMe()
         {
             logger.Debug("invoke GetMe");
-            if (info != null)
+
+            string jsonRaw = DoGet("/v0/me");
+            
+            if (!String.IsNullOrEmpty(jsonRaw))
             {
-                string uri = "/v0/me";
-                string jsonRaw = null;
                 try
                 {
-                    HttpResponse httpResponse = client.Get(uri);
-                    jsonRaw = httpResponse.RawText;
+                    JObject jObject = JObject.Parse(jsonRaw);
+                    Dictionary<string,string> info = new Dictionary<string, string>
+                    {
+                        { "username", jObject["username"].ToObject<string>() },
+                        { "nickname", jObject["nickname"].ToObject<string>() },
+                        { "sign", jObject["sign"].ToObject<string>() },
+                        { "avatar", jObject["avatar"]["large"].ToObject<string>() },
+                        { "id", jObject["id"].ToObject<int>().ToString() }
+                    };
+                    logger.Debug("GetMe success");
+                    return info;
                 }
                 catch (Exception e)
                 {
-                    logger.Warn($"invoke `GetMe` network error: {e.GetType()}: {e.Message}");
-                }
-
-                if (!String.IsNullOrEmpty(jsonRaw))
-                {
-                    try
-                    {
-                        JObject jObject = JObject.Parse(jsonRaw);
-                        info = new Dictionary<string, string>
-                        {
-                            { "username", jObject["username"].ToObject<string>() },
-                            { "nickname", jObject["nickname"].ToObject<string>() },
-                            { "sign", jObject["sign"].ToObject<string>() },
-                            { "avatar", jObject["avatar"]["large"].ToObject<string>() },
-                            { "id", jObject["id"].ToObject<int>().ToString() }
-                        };
-                    }
-                    catch (Exception e)
-                    {
-                        logger.Warn($"invoke parse error: {e.GetType()}: {e.Message}; the access token may be wrong");
-                    }
+                    logger.Warn($"invoke parse error: {e.GetType()}: {e.Message}; the access token may be wrong");
                 }
             }
-
-            logger.Debug(info != null ? "GetMe success" : "GetMe fail");
-            return info;
+            
+            return null;
         }
 
         public List<BangumiSubject> Search(string keyword, string pattern = null)
@@ -113,26 +131,28 @@ namespace Bangumi.Services
             }
 
 
-            // search
-            string uri = $"/search/subject/{Uri.EscapeDataString(keyword.Replace("!", ""))}";
-
-            try
+            // 使用名字搜索
+            string rawJson = DoGet($"/search/subject/{Uri.EscapeDataString(keyword.Replace("!", ""))}",
+                new { type = 4, responseGroup = "medium" });
+            if (!string.IsNullOrEmpty(rawJson))
             {
-                HttpResponse httpResponse = client.Get(uri, new { type = 4, responseGroup = "medium" });
-                JObject jObject = JsonConvert.DeserializeObject<JObject>(httpResponse.RawText);
-                JArray jArray = jObject["list"].ToObject<JArray>();
-                searchResult.AddRange(jArray
-                    .Where(token => token["id"].ToObject<uint>() != id)
-                    .Select(token => new BangumiSubject(
-                        id: token["id"].ToObject<uint>(), name: token["name"].ToObject<string>(),
-                        nameCn: token["name_cn"].ToObject<string>(), summary: token["summary"].ToObject<string>()
-                    )));
+                try
+                {
+                    JObject jObject = JsonConvert.DeserializeObject<JObject>(rawJson);
+                    JArray jArray = jObject["list"].ToObject<JArray>();
+                    searchResult.AddRange(jArray
+                        .Where(token => token["id"].ToObject<uint>() != id)
+                        .Select(token => new BangumiSubject(
+                            id: token["id"].ToObject<uint>(), name: token["name"].ToObject<string>(),
+                            nameCn: token["name_cn"].ToObject<string>(), summary: token["summary"].ToObject<string>()
+                        )));
+                }
+                catch (Exception e)
+                {
+                    logger.Warn($"{e.GetType()}:\t{e.Message}");
+                }
             }
-            catch (Exception e)
-            {
-                logger.Error($"{e.GetType()}:\t{e.Message}");
-            }
-
+            
             logger.Debug($"Search result: [{string.Join(",", searchResult.Select(subject => subject.id))}]");
             return searchResult;
         }
@@ -140,19 +160,22 @@ namespace Bangumi.Services
         public BangumiSubject GetSubjectById(uint id)
         {
             logger.Debug($"invoke GetSubjectById({id})");
-
-            string uri = $"/v0/subjects/{id}";
+            
             BangumiSubject bangumiSubject = null;
-            try
+            
+            string raw = DoGet($"/v0/subjects/{id}");
+            if (!string.IsNullOrEmpty(raw))
             {
-                HttpResponse httpResponse = client.Get(uri);
-                bangumiSubject = Parse(httpResponse.RawText);
+                try
+                {
+                    bangumiSubject = Parse(raw);
+                }
+                catch (Exception e)
+                {
+                    logger.Warn($"{e.GetType()}: {e.Message}");
+                }
             }
-            catch (Exception e)
-            {
-                logger.Error($"{e.GetType()}: {e.Message}");
-            }
-
+            
             logger.Debug($"Subject: {bangumiSubject}");
             return bangumiSubject;
         }
