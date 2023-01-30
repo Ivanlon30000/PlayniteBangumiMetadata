@@ -1,9 +1,8 @@
-﻿using Playnite.SDK.Plugins;
+﻿using System;
+using Playnite.SDK.Plugins;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Bangumi.Models;
-using Bangumi.Services;
-using Bangumi.Utils;
-using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 
@@ -123,31 +122,78 @@ namespace Bangumi
                 return false;
             }
 
-            SearchOption item = ((SearchOption)plugin.PlayniteApi.Dialogs.ChooseItemWithSearch(null,
-                searchKeyword =>
-                {
-                    List<GenericItemOption> itemOptions = new List<GenericItemOption>();
-                    foreach (var bangumiSubject in plugin.Service.Search(searchKeyword, plugin.Settings.NameFormatPattern))
-                    {
-                        string optionName = PlayniteSubject.FormatName(bangumiSubject, plugin.Settings);
-                        string optionDescription = bangumiSubject.summary
-                            .Replace("\r", "")
-                            .Replace("\n", "");
-                        if (optionDescription.Length > 100)
-                        {
-                            optionDescription = optionDescription.Substring(0, 100) + "...";
-                        }
-                        itemOptions.Add(new SearchOption(bangumiSubject.id, optionName, optionDescription));
-                    }
-
-                    return itemOptions;
-                }, 
-                options.GameData.Name, "搜索"));
+            string keyword = options.GameData.Name;
+            string pattern = plugin.Settings.NameFormatPattern;
             
-            if (item != null)
+            // 直接解析为bangumi id
+            uint id = 0;
+            try
             {
-                logger.Debug($@"selected item: {item}");
-                subject = new PlayniteSubject(plugin.Service.GetSubjectById(item.Id), plugin.Settings);
+                id = uint.Parse(keyword);
+            }
+            catch (FormatException)
+            {
+
+            }
+
+            // 从名称中提取bangumi id
+            if (id == 0 && !string.IsNullOrEmpty(pattern))
+            {
+                Match match = Regex.Match(keyword, pattern);
+                string idStr = match.Groups["id"].Value;
+                if (!string.IsNullOrEmpty(idStr))
+                {
+                    try
+                    {
+                        id = uint.Parse(idStr);
+                    }
+                    catch (FormatException)
+                    {
+
+                    }
+                }
+            }
+            
+            
+            if (id > 0)
+            {
+                // 成功解析id
+                logger.Debug($"match subject with id {id}");
+            }
+            else
+            {
+                // 未成功解析id，打开搜索窗口
+                SearchOption item = ((SearchOption)plugin.PlayniteApi.Dialogs.ChooseItemWithSearch(null,
+                    searchKeyword =>
+                    {
+                        List<GenericItemOption> itemOptions = new List<GenericItemOption>();
+                        foreach (var bangumiSubject in plugin.Service.Search(searchKeyword))
+                        {
+                            string optionName = PlayniteSubject.FormatName(bangumiSubject, plugin.Settings);
+                            string optionDescription = bangumiSubject.summary
+                                .Replace("\r", "")
+                                .Replace("\n", "");
+                            if (optionDescription.Length > 100)
+                            {
+                                optionDescription = optionDescription.Substring(0, 100) + "...";
+                            }
+                            itemOptions.Add(new SearchOption(bangumiSubject.id, optionName, optionDescription));
+                        }
+
+                        return itemOptions;
+                    }, 
+                    options.GameData.Name, "搜索"));
+            
+                if (item != null)
+                {
+                    logger.Debug($@"selected item: {item}");
+                    id = item.Id;
+                }
+            }
+
+            if (id > 0)
+            {
+                subject = new PlayniteSubject(plugin.Service.GetSubjectById(id), plugin.Settings);
             }
             
             logger.Debug($@"subject is {subject}, GetBangumiMetadata returned");

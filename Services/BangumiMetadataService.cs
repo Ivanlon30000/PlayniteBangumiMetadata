@@ -3,8 +3,6 @@ using Bangumi.Models;
 using EasyHttp.Http;
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
-using EasyHttp.Infrastructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Playnite.SDK;
@@ -91,47 +89,11 @@ namespace Bangumi.Services
             return null;
         }
 
-        public List<BangumiSubject> Search(string keyword, string pattern = null)
+        public List<BangumiSubject> Search(string keyword)
         {
             logger.Debug($"Search '{keyword}'");
-
-            // 直接解析为bangumi id
+            
             List<BangumiSubject> searchResult = new List<BangumiSubject>();
-            uint id = 0;
-            try
-            {
-                id = uint.Parse(keyword);
-            }
-            catch (FormatException)
-            {
-
-            }
-
-            // 从名称中提取bangumi id
-            if (id == 0 && !string.IsNullOrEmpty(pattern))
-            {
-                Match match = Regex.Match(keyword, pattern);
-                string idStr = match.Groups["id"].Value;
-                if (!string.IsNullOrEmpty(idStr))
-                {
-                    try
-                    {
-                        id = uint.Parse(idStr);
-                    }
-                    catch (FormatException)
-                    {
-
-                    }
-                }
-            }
-
-            if (id > 0)
-            {
-                searchResult.Add(GetSubjectById(id));
-                logger.Debug($"match subject with id {id}");
-            }
-
-
             // 使用名字搜索
             string rawJson = DoGet($"/search/subject/{Uri.EscapeDataString(keyword.Replace("!", ""))}",
                 new { type = 4, responseGroup = "medium" });
@@ -142,7 +104,6 @@ namespace Bangumi.Services
                     JObject jObject = JsonConvert.DeserializeObject<JObject>(rawJson);
                     JArray jArray = jObject["list"].ToObject<JArray>();
                     searchResult.AddRange(jArray
-                        .Where(token => token["id"].ToObject<uint>() != id)
                         .Select(token => new BangumiSubject(
                             id: token["id"].ToObject<uint>(), name: token["name"].ToObject<string>(),
                             nameCn: token["name_cn"].ToObject<string>(), summary: token["summary"].ToObject<string>()
