@@ -14,6 +14,7 @@
         </StackPanel>
         
         <StackPanel Margin="5">
+            <CheckBox IsChecked="{Binding Settings.EnableTags}">提供Tags</CheckBox>
             <TextBlock Text="Tag过滤阈值"/>
             <TextBox Text="{Binding Settings.TagThres}"/>
         </StackPanel>

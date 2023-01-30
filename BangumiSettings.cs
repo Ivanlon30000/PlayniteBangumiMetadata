@@ -10,6 +10,7 @@ namespace Bangumi
     {
         public string AccessToken { get; set; } = string.Empty;
 
+        public bool EnableTags { get; set; } = true;
         public int TagThres { get; set; } = 50;
 
         public bool CoverImageAsBackgroundImage { get; set; } = true;
@@ -28,7 +29,8 @@ namespace Bangumi
         [DontSerialize] 
         public string AccessTokenStatusMessage { get; set; } = string.Empty;
 
-        [DontSerialize] public string VersionString => $"Ver. {Bangumi.VERSION}";
+        [DontSerialize] 
+        public string VersionString => $"Ver. {Bangumi.VERSION}";
 
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
