@@ -205,7 +205,6 @@ namespace Bangumi.Models
         {
             get
             {
-                if (!settings.EnableTags) return null;
                 if (tags == null)
                 {
                     tags = new List<MetadataProperty>(

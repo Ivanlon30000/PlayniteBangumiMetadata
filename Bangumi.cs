@@ -10,7 +10,7 @@ namespace Bangumi
 {
     public class Bangumi : MetadataPlugin
     {
-        public static readonly string VERSION = "1.1.0";
+        public static readonly string VERSION = "1.2.0";
         private ILogger logger;
         private BangumiSettingsViewModel settings { get; set; }
         
@@ -54,17 +54,17 @@ namespace Bangumi
             };
             Service = new BangumiMetadataService(this);
             
-            logger.Info($"Bangumi Initialization. Ver.{VERSION}");
-            logger.Info($"Settings:");
-            logger.Info($"\tAccessToken: (hidden)({Settings.AccessToken.Length})");
-            logger.Info($"\tTagThresh: {Settings.TagThres}");
-            logger.Info($"\tCoverImageAsBackgroundImage: {Settings.CoverImageAsBackgroundImage}");
-            logger.Info($"\tNameFormatNameCnExists: {Settings.NameFormatNameCnExists}");
-            logger.Info($"\tNameFormatNameCnNotExists: {Settings.NameFormatNameCnNotExists}");
-            logger.Info($"\tNameFormatPattern: {Settings.NameFormatPattern}");
-            logger.Info($"\tNsfwTag: {Settings.NsfwTag}");
-            logger.Info($"\tSfwTag: {Settings.SfwTag}");
-            logger.Info($"\tEnableDebug: {Settings.EnableDebug}");
+            // logger.Info($"Bangumi Initialization. Ver.{VERSION}");
+            // logger.Info($"Settings:");
+            // logger.Info($"\tAccessToken: (hidden)({Settings.AccessToken.Length})");
+            // logger.Info($"\tTagThresh: {Settings.TagThres}");
+            // logger.Info($"\tCoverImageAsBackgroundImage: {Settings.CoverImageAsBackgroundImage}");
+            // logger.Info($"\tNameFormatNameCnExists: {Settings.NameFormatNameCnExists}");
+            // logger.Info($"\tNameFormatNameCnNotExists: {Settings.NameFormatNameCnNotExists}");
+            // logger.Info($"\tNameFormatPattern: {Settings.NameFormatPattern}");
+            // logger.Info($"\tNsfwTag: {Settings.NsfwTag}");
+            // logger.Info($"\tSfwTag: {Settings.SfwTag}");
+            // logger.Info($"\tEnableDebug: {Settings.EnableDebug}");
         }
 
         public override OnDemandMetadataProvider GetMetadataProvider(MetadataRequestOptions options)

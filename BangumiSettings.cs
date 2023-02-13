@@ -8,9 +8,25 @@ namespace Bangumi
 {
     public class BangumiSettings : ObservableObject
     {
+        // Acess Token
         public string AccessToken { get; set; } = string.Empty;
+        
+        // Metadata开关
+        public bool EnableCommunityScore { get; set;} = true;
+        public bool EnableCoverImage { get; set;} = true;
+        public bool EnableDescription { get; set;} = true;
+        public bool EnableDevelopers { get; set;} = true;
+        public bool EnableGenres { get; set;} = true;
+        public bool EnableLinks { get; set;} = true;
+        public bool EnableName { get; set;} = true;
+        public bool EnablePublishers { get; set;} = true;
+        public bool EnableReleaseDate { get; set;} = true;
+        public bool EnableTags { get; set;} = true;
+        public bool EnableBackgroundImage { get; set;} = true;
+        public bool EnableAgeRating { get; set;} = true;
+        public bool EnablePlatform { get; set;} = true;
 
-        public bool EnableTags { get; set; } = true;
+        // Tag
         public int TagThres { get; set; } = 50;
 
         public bool CoverImageAsBackgroundImage { get; set; } = true;

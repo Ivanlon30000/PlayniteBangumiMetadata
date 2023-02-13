@@ -4,49 +4,104 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="400" d:DesignWidth="600">
+             d:DesignHeight="800" d:DesignWidth="600">
     
     <StackPanel Margin="10">
         <StackPanel Margin="5">
-            <TextBlock Text="Access Token"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" FontWeight="Bold" FontSize="14">Access Token</TextBlock>
+                <TextBlock 
+                    Grid.Row="0" Grid.Column="1" 
+                    TextAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Text="{Binding Settings.AccessTokenStatusMessage}">
+                </TextBlock>
+            </Grid>
             <TextBox Text="{Binding Settings.AccessToken}"/>
-            <TextBlock Text="{Binding Settings.AccessTokenStatusMessage}"></TextBlock>
         </StackPanel>
+
+        <StackPanel Margin="5">
+            <TextBlock FontWeight="Bold" FontSize="14">提供数据</TextBlock>
+            <WrapPanel ItemWidth="100" Margin="5">
+                <CheckBox IsChecked="{Binding Settings.EnableCommunityScore}">评分</CheckBox>
+                <CheckBox IsChecked="{Binding Settings.EnableCoverImage}">封面</CheckBox>
+                <CheckBox IsChecked="{Binding Settings.EnableDescription}">介绍</CheckBox>
+                <CheckBox IsChecked="{Binding Settings.EnableDevelopers}">开发商</CheckBox>
+                <CheckBox IsChecked="{Binding Settings.EnableGenres}">流派(genre)</CheckBox>
+                <CheckBox IsChecked="{Binding Settings.EnableLinks}">链接</CheckBox>
+                <CheckBox IsChecked="{Binding Settings.EnableName}">名称</CheckBox>
+                <CheckBox IsChecked="{Binding Settings.EnablePublishers}">发行商</CheckBox>
+                <CheckBox IsChecked="{Binding Settings.EnableReleaseDate}">发行日期</CheckBox>
+                <CheckBox IsChecked="{Binding Settings.EnableTags}">标签</CheckBox>
+                <CheckBox IsChecked="{Binding Settings.EnableBackgroundImage}">背景图片</CheckBox>
+                <CheckBox IsChecked="{Binding Settings.EnableAgeRating}">年龄分级</CheckBox>
+                <CheckBox IsChecked="{Binding Settings.EnablePlatform}">平台</CheckBox>
+            </WrapPanel>
+        </StackPanel>
+        
         
         <StackPanel Margin="5">
-            <CheckBox IsChecked="{Binding Settings.EnableTags}">提供Tags</CheckBox>
-            <TextBlock Text="Tag过滤阈值"/>
-            <TextBox Text="{Binding Settings.TagThres}"/>
-        </StackPanel>
-        
-        <StackPanel Margin="5">
-            <CheckBox IsChecked="{Binding Settings.CoverImageAsBackgroundImage}">使用封面作为背景</CheckBox>
-        </StackPanel>
-        
-        <StackPanel  Margin="5">
-            <TextBlock Text="命名格式"/>
-            <StackPanel>
-                <TextBlock Text="存在译名时："/>
-                <TextBox Text="{Binding Settings.NameFormatNameCnExists}" />
-                <TextBlock Text="不存在译名时："/>
-                <TextBox Text="{Binding Settings.NameFormatNameCnNotExists}" />
+            <TextBlock FontWeight="Bold" FontSize="14">标签</TextBlock>
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <TextBlock Text="Tag过滤阈值" Width="100"/>
+                <TextBox 
+                    Text="{Binding Settings.TagThres}" 
+                    Width="50"/>
             </StackPanel>
         </StackPanel>
         
         <StackPanel Margin="5">
-            <TextBlock Text="从名称中提取Bangumi Id的正则表达式"></TextBlock>
-            <TextBox Text="{Binding Settings.NameFormatPattern}"></TextBox>
+            <TextBlock FontWeight="Bold" FontSize="14">图像</TextBlock>
+            <StackPanel Margin="5">
+                <CheckBox IsChecked="{Binding Settings.CoverImageAsBackgroundImage}">使用封面作为背景</CheckBox>
+            </StackPanel>
+        </StackPanel>
+        
+        <StackPanel  Margin="5">
+            <TextBlock Text="命名格式" FontWeight="Bold" FontSize="14"/>
+            <StackPanel Margin="5">
+                <TextBlock FontWeight="Light" FontStyle="Italic">
+                    可选字段：%name%（原名）；%name_cn%（译名，如果有）；%id（Bangumi Subject Id）
+                </TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="存在译名时：" Width="120"/>
+                    <TextBox Text="{Binding Settings.NameFormatNameCnExists}" Width="150"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="不存在译名时：" Width="120"/>
+                    <TextBox Text="{Binding Settings.NameFormatNameCnNotExists}" Width="150"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Margin="5">
+                <TextBlock Text="从名称中提取Bangumi Id的正则表达式"></TextBlock>
+                <TextBox Text="{Binding Settings.NameFormatPattern}"></TextBox>
+            </StackPanel>
         </StackPanel>
         
         <StackPanel Margin="5">
-            <TextBlock>为NSFW游戏添加分级标签（留空不添加，英文逗号分隔）</TextBlock>
-            <TextBox Text="{Binding Settings.NsfwTag}"></TextBox>
-            <TextBlock>为SFW游戏添加分级标签（留空不添加，英文逗号分隔）</TextBlock>
-            <TextBox Text="{Binding Settings.SfwTag}"></TextBox>
+            <TextBlock Text="年龄分级" FontWeight="Bold" FontSize="14"/>
+            <StackPanel Margin="5">
+                <TextBlock>为游戏添加年龄分级标签（英文逗号分隔）</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Width="50">NSFW</TextBlock>
+                    <TextBox Text="{Binding Settings.NsfwTag}" Width="200"></TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Width="50">SFW</TextBlock>
+                    <TextBox Text="{Binding Settings.SfwTag}" Width="200"></TextBox>
+                </StackPanel>
+            </StackPanel>
         </StackPanel>
         
         <StackPanel Margin="5">
-            <CheckBox IsChecked="{Binding Settings.EnableDebug}">开启调试 (重启Playnite后生效)</CheckBox>
+            <TextBlock Text="其他" FontWeight="Bold" FontSize="14"/>
+            <StackPanel Margin="5">
+                <CheckBox IsChecked="{Binding Settings.EnableDebug}">开启调试 (重启Playnite后生效)</CheckBox>
+            </StackPanel>
         </StackPanel>
         
         <StackPanel Margin="5">

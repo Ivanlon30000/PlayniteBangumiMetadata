@@ -23,7 +23,7 @@ namespace Bangumi
             {
                 if (availableFields == null)
                 {
-                    availableFields = GetAvailableFields();
+                    availableFields = UpdateAvailableFields();
                 }
 
                 return availableFields;
@@ -39,62 +39,62 @@ namespace Bangumi
             logger.Debug("new BangumiProvider");
         }
 
-        private List<MetadataField> GetAvailableFields()
+        private List<MetadataField> UpdateAvailableFields()
         {
             logger.Debug("invoke GetAvailableFields");
             List<MetadataField> metadataFields = new List<MetadataField>();
-            if (GetBangumiMetadata() && subject !=null)
+            if (UpdateSubject() && subject !=null)
             {
                 logger.Debug(subject.ToString());
-                if (!string.IsNullOrEmpty(subject.Name))
+                if (plugin.Settings.EnableName && !string.IsNullOrEmpty(subject.Name))
                 {
                     metadataFields.Add(MetadataField.Name);
                 }                
-                if (!string.IsNullOrEmpty(subject.Description))
+                if (plugin.Settings.EnableDescription && !string.IsNullOrEmpty(subject.Description))
                 {
                     metadataFields.Add(MetadataField.Description);
                 }             
-                if (subject.CommunityScore > 0)
+                if (plugin.Settings.EnableCommunityScore && subject.CommunityScore > 0)
                 {
                     metadataFields.Add(MetadataField.CommunityScore);
                 }
-                if (subject.CoverImage != null)
+                if (plugin.Settings.EnableCoverImage && subject.CoverImage != null)
                 {
                     metadataFields.Add(MetadataField.CoverImage);
                 }
-                if (subject.BackgroundImage != null)
+                if (plugin.Settings.EnableBackgroundImage && subject.BackgroundImage != null)
                 {
                     metadataFields.Add(MetadataField.BackgroundImage);
                 }
-                if (subject.Developers != null && subject.Developers.Count > 0)
+                if (plugin.Settings.EnableDevelopers && subject.Developers != null && subject.Developers.Count > 0)
                 {
                     metadataFields.Add(MetadataField.Developers);
                 }
-                if (subject.Genres != null && subject.Genres.Count > 0)
+                if (plugin.Settings.EnableGenres && subject.Genres != null && subject.Genres.Count > 0)
                 {
                     metadataFields.Add(MetadataField.Genres);
                 }
-                if (subject.Links != null && subject.Links.Count > 0)
+                if (plugin.Settings.EnableLinks && subject.Links != null && subject.Links.Count > 0)
                 {
                     metadataFields.Add(MetadataField.Links);
                 }
-                if (subject.Publishers != null && subject.Publishers.Count > 0)
+                if (plugin.Settings.EnablePublishers && subject.Publishers != null && subject.Publishers.Count > 0)
                 {
                     metadataFields.Add(MetadataField.Publishers);
                 }
-                if (subject.ReleaseDate != ReleaseDate.Empty)
+                if (plugin.Settings.EnableReleaseDate && subject.ReleaseDate != ReleaseDate.Empty)
                 {
                     metadataFields.Add(MetadataField.ReleaseDate);
                 }
-                if (subject.Tags != null && subject.Tags.Count > 0)
+                if (plugin.Settings.EnableTags && subject.Tags != null && subject.Tags.Count > 0)
                 {
                     metadataFields.Add(MetadataField.Tags);
                 }                
-                if (subject.AgeRating != null && subject.AgeRating.Count > 0)
+                if (plugin.Settings.EnableAgeRating && subject.AgeRating != null && subject.AgeRating.Count > 0)
                 {
                     metadataFields.Add(MetadataField.AgeRating);
                 }
-                if (subject.Platform != null && subject.Platform.Count > 0)
+                if (plugin.Settings.EnablePlatform && subject.Platform != null && subject.Platform.Count > 0)
                 {
                     metadataFields.Add(MetadataField.Platform);
                 }
@@ -107,7 +107,7 @@ namespace Bangumi
          * 根据名称 `options.GameData.Name` 获取 metadata；
          * 获取成功返回 true
          */
-        private bool GetBangumiMetadata()
+        private bool UpdateSubject()
         {
             logger.Debug("invoke GetBangumiMetadata");
             if (subject != null)
