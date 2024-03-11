@@ -32,8 +32,8 @@ namespace Bangumi.Models
         public static string FormatName(BangumiSubject subject, BangumiSettings settings)
         {
             string nameTemplate = string.IsNullOrEmpty(subject.nameCn)
-                    ? String.IsNullOrEmpty(settings.NameFormatNameCnNotExists) ? settings.NameFormatNameCnNotExists : "%name%"
-                    : String.IsNullOrEmpty(settings.NameFormatNameCnExists) ? settings.NameFormatNameCnExists : "%name_cn";
+                    ? String.IsNullOrEmpty(settings.NameFormatNameCnNotExists) ? "%name%" : settings.NameFormatNameCnNotExists
+                    : String.IsNullOrEmpty(settings.NameFormatNameCnExists) ? "%name_cn%" : settings.NameFormatNameCnExists;
             
             return StringUtil.FormatWithDictionary(nameTemplate, new Dictionary<string, string>
             {
