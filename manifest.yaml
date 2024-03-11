@@ -4,7 +4,3 @@ Packages:
     PackageUrl: https://github.com/Ivanlon30000/PlayniteBangumiMetadata/releases/download/v1.3.0/Bangumi_fea02b9a-ab77-47e3-8fb1-6512c9261fbe_1_3_0.pext
     RequiredApiVersion: 6.8.0
     ReleaseDate: 2024-03-11
-    Changelog:
-      - 优化LoginStatus逻辑
-      - 优化FormatName逻辑
-      - 对齐Newtonsoft.Json版本号
