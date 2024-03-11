@@ -4,6 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Models;
+using Bangumi.Utils;
 
 namespace Bangumi.Models
 {
@@ -27,18 +28,6 @@ namespace Bangumi.Models
          * getters
          */
         public string Name => FormatName(bangumiSubject, settings);
-        // {
-        //     get
-        //     {
-        //         return (string.IsNullOrEmpty(bangumiSubject.nameCn)
-        //                 ? settings.NameFormatNameCnNotExists
-        //                 : settings.NameFormatNameCnExists)
-        //             .Replace("%name%", bangumiSubject.name)
-        //             .Replace("%name_cn%", bangumiSubject.nameCn)
-        //             .Replace("%id%", bangumiSubject.id.ToString())
-        //             .Replace("%%", "%");
-        //     }
-        // }
 
         public static string FormatName(BangumiSubject subject, BangumiSettings settings)
         {

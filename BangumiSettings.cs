@@ -57,7 +57,7 @@ namespace Bangumi
 
     public class BangumiSettingsViewModel : ObservableObject, ISettings
     {
-        private readonly Bangumi plugin;
+        private Bangumi plugin;
         private BangumiSettings editingClone { get; set; }
 
         private BangumiSettings settings;
@@ -98,7 +98,12 @@ namespace Bangumi
         public void BeginEdit()
         {
             // Code executed when settings view is opened and user starts editing values.
-            updateLoginStatus();
+            Dictionary<string, string> me = null;
+            if (!String.IsNullOrEmpty(settings.AccessToken))
+            {
+                me = plugin.Service.GetMe();
+            }
+            UpdateLoginStatus(me);
             editingClone = Serialization.GetClone(Settings);
         }
 
@@ -122,29 +127,35 @@ namespace Bangumi
             // Executed before EndEdit is called and EndEdit is not called if false is returned.
             // List of errors is presented to user if verification fails.
             errors = new List<string>();
-            if (!String.IsNullOrEmpty(Settings.AccessToken) && plugin.Service.GetMe() == null)
+
+            if (String.IsNullOrEmpty(Settings.AccessToken))
+            {
+                return true;
+            }
+
+            var me = plugin.Service.GetMe();
+            UpdateLoginStatus(me);
+            if (me == null)
             {
                 errors.Add("使用Access Token认证失败");
-                updateLoginStatus();
                 return false;
             }
 
             return true;
         }
 
-        private void updateLoginStatus()
+        private void UpdateLoginStatus(Dictionary<string, string> me)
         {
             if (String.IsNullOrEmpty(settings.AccessToken))
             {
-                Settings.AccessTokenStatusMessage = "未登录，部分条目搜索不到";
+                Settings.AccessTokenStatusMessage = "未登录，部分条目搜索不到/无法获取详情";
             }
             else
             {
-                var loginStatus = plugin.Service.GetMe();
-                Settings.AccessTokenStatusMessage =
-                    loginStatus != null
-                        ? $"当前登录：{loginStatus["nickname"]}({loginStatus["username"]})"
-                        : "访问Bangumi API失败，请检查Access Token并重启Playnite";
+                Settings.AccessTokenStatusMessage = 
+                    me != null 
+                    ? $"当前登录：{me["nickname"]}({me["username"]})" 
+                    : "访问Bangumi API失败，请检查Access Token并重启Playnite";
             }
         }
     }

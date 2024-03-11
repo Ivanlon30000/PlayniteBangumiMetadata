@@ -14,11 +14,9 @@ namespace Bangumi
         private ILogger logger;
         private BangumiSettingsViewModel settings { get; set; }
         
-        
         public BangumiSettings Settings => settings.Settings;
         public BangumiMetadataService Service { get; }
         public ILogger Logger => logger;
-        
         
 
         public override Guid Id { get; } = Guid.Parse("fea02b9a-ab77-47e3-8fb1-6512c9261fbe");
@@ -52,19 +50,7 @@ namespace Bangumi
             {
                 HasSettings = true
             };
-            Service = new BangumiMetadataService(this);
-            
-            // logger.Info($"Bangumi Initialization. Ver.{VERSION}");
-            // logger.Info($"Settings:");
-            // logger.Info($"\tAccessToken: (hidden)({Settings.AccessToken.Length})");
-            // logger.Info($"\tTagThresh: {Settings.TagThres}");
-            // logger.Info($"\tCoverImageAsBackgroundImage: {Settings.CoverImageAsBackgroundImage}");
-            // logger.Info($"\tNameFormatNameCnExists: {Settings.NameFormatNameCnExists}");
-            // logger.Info($"\tNameFormatNameCnNotExists: {Settings.NameFormatNameCnNotExists}");
-            // logger.Info($"\tNameFormatPattern: {Settings.NameFormatPattern}");
-            // logger.Info($"\tNsfwTag: {Settings.NsfwTag}");
-            // logger.Info($"\tSfwTag: {Settings.SfwTag}");
-            // logger.Info($"\tEnableDebug: {Settings.EnableDebug}");
+            Service = new BangumiMetadataService(this);       
         }
 
         public override OnDemandMetadataProvider GetMetadataProvider(MetadataRequestOptions options)
