@@ -42,13 +42,16 @@ namespace Bangumi.Models
 
         public static string FormatName(BangumiSubject subject, BangumiSettings settings)
         {
-            return (string.IsNullOrEmpty(subject.nameCn)
-                    ? settings.NameFormatNameCnNotExists
-                    : settings.NameFormatNameCnExists)
-                .Replace("%name%", subject.name)
-                .Replace("%name_cn%", subject.nameCn)
-                .Replace("%id%", subject.id.ToString())
-                .Replace("%%", "%");
+            string nameTemplate = string.IsNullOrEmpty(subject.nameCn)
+                    ? String.IsNullOrEmpty(settings.NameFormatNameCnNotExists) ? settings.NameFormatNameCnNotExists : "%name%"
+                    : String.IsNullOrEmpty(settings.NameFormatNameCnExists) ? settings.NameFormatNameCnExists : "%name_cn";
+            
+            return StringUtil.FormatWithDictionary(nameTemplate, new Dictionary<string, string>
+            {
+                {"name", subject.name },
+                {"name_cn", subject.nameCn },
+                {"id", subject.id.ToString() },
+            });
         }
 
         private string description;
