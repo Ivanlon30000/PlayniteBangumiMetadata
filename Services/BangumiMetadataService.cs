@@ -154,7 +154,7 @@ namespace Bangumi.Services
                 return null;
             }
 
-            if (!jObject.ContainsKey("id"))
+            if (jObject.GetValue("id") == null)
             {
                 return null;
             }
