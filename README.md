@@ -15,7 +15,7 @@
 2. 打开文件 -> 同意安装
 
 ### 设置 Access Token （可选）
-1. 在 [Bangumi API](https://bangumi.github.io/api/) 生成一个 Access Token
+1. 在 [个人令牌](https://next.bgm.tv/demo/access-token) 生成一个 Access Token
 2. 在 `扩展设置` -> `资料数据来源` -> `Bangumi` -> `Access Token` 中填写你的 Access Token
 
 #### 不设置 Access Token 可能会出现以下情况：  
