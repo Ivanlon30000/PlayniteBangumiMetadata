@@ -70,7 +70,7 @@
   > 支持3个字段  
   > 1. `%name%`: 原名  
   > 2. `%name_cn%`: 译名（如果有）  
-  > 3. `%id`: Bangumi Subject Id  
+  > 3. `%id%`: Bangumi Subject Id  
 + 从名称中提取 Bangumi Subject Id 的正则表达式（需要包括 `id` 捕获组）  
   > 适用于在使用 Playnite 之前已经有整理过游戏库的情况  
   > 比如 `[ALICE SOFT]ドーナドーナいっしょにわるいことをしよ[297734]`
